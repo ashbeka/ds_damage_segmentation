@@ -11,6 +11,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import yaml
 import rasterio
+from eval.utils import suppress_rasterio_warnings
+from data.preprocessing import reindex_stats
+
+suppress_rasterio_warnings()
 
 from data.multisenge_dataset import load_pair, scan_multisenge_s2, select_pairs
 from data.preprocessing import BandStats, apply_normalization, load_band_stats
@@ -63,7 +67,7 @@ def main():
     stats = load_band_stats(Path(cfg["normalization"]["stats_path"]))
     desired_order = cfg["dataset"].get("band_order")
     stats_order = cfg["normalization"].get("stats_band_order", desired_order)
-    if desired_order is not None and len(stats.mean) != len(desired_order):
+    if desired_order is not None and stats_order is not None and stats_order != desired_order:
         stats = subset_stats(stats, stats_order, desired_order)
     samples = scan_multisenge_s2(args.multisenge_root)
     pairs = select_pairs(

@@ -22,6 +22,9 @@ from data.preprocessing import BandStats, apply_normalization
 from ds.ds_scores import DSConfig, compute_ds_scores, sliding_window_ds
 from eval.metrics import auroc_score, binary_metrics
 from eval.thresholding import apply_threshold, grid_search_threshold, otsu_threshold
+from eval.utils import suppress_rasterio_warnings
+
+suppress_rasterio_warnings()
 
 
 def git_hash() -> str:

@@ -165,3 +165,18 @@ def apply_normalization(
     if valid_mask is not None:
         normed[:, ~valid_mask] = fill_value
     return normed, valid_mask
+
+
+def reindex_stats(stats: BandStats, stats_order, desired_order) -> BandStats:
+    """
+    Reindex BandStats from stats_order to desired_order (subset/reorder).
+    """
+    idx_map = {b: i for i, b in enumerate(stats_order)}
+    mean = []
+    std = []
+    for b in desired_order:
+        if b not in idx_map:
+            raise ValueError(f"Band {b} not found in stats_order")
+        mean.append(stats.mean[idx_map[b]])
+        std.append(stats.std[idx_map[b]])
+    return BandStats(mean=np.array(mean, dtype=np.float32), std=np.array(std, dtype=np.float32), eps=stats.eps)
