@@ -29,6 +29,7 @@ class DSConfig:
     score_normalization: str = "percentile_99"  # or "minmax" / None
     percentile: float = 99.0
     nodata_value: Optional[float] = 0.0
+    subspace_variant: str = "residual"  # "residual" (default) or "eig"
 
 
 def _normalize_score(score: Array, method: Optional[str], percentile: float = 99.0) -> Array:
@@ -70,7 +71,10 @@ def _compute_ds_matrix_scores(
         use_randomized=cfg.use_randomized_pca,
     ).basis
 
-    d_basis = pca_utils.difference_subspace(phi, psi)
+    if cfg.subspace_variant == "eig":
+        d_basis = pca_utils.difference_subspace_eig(phi, psi)
+    else:
+        d_basis = pca_utils.difference_subspace(phi, psi)
     diff = x2_mat - x1_mat
     proj_coeff = d_basis.T @ diff
     projection_energy = np.sum(proj_coeff * proj_coeff, axis=0)

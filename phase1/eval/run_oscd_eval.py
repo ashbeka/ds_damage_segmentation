@@ -11,6 +11,7 @@ from typing import Dict, List, Tuple
 
 import numpy as np
 import yaml
+from PIL import Image
 
 from baselines.celik_pca_kmeans import celik_score
 from baselines.cva import cva_score
@@ -47,6 +48,7 @@ def parse_args():
     ap.add_argument("--output_dir", required=True, type=Path)
     ap.add_argument("--no_window", action="store_true", help="Disable DS sliding window regardless of config.")
     ap.add_argument("--disable_celik", action="store_true", help="Disable Celik baseline regardless of config.")
+    ap.add_argument("--save_change_maps", action="store_true", help="Save per-tile change maps to disk.")
     return ap.parse_args()
 
 
@@ -57,6 +59,21 @@ def load_config(path: Path) -> dict:
 
 def ensure_dir(path: Path):
     path.mkdir(parents=True, exist_ok=True)
+
+
+def save_change_map_npytiff(
+    base_dir: Path,
+    split: str,
+    method: str,
+    city: str,
+    score: np.ndarray,
+    mask: np.ndarray,
+):
+    score_dir = base_dir / split / method
+    score_dir.mkdir(parents=True, exist_ok=True)
+    np.save(score_dir / f"{city}_score.npy", score.astype(np.float32))
+    img = Image.fromarray((mask.astype(np.uint8) * 255))
+    img.save(score_dir / f"{city}_mask.png")
 
 
 def run_methods_on_tile(
@@ -233,6 +250,7 @@ def main():
     args = parse_args()
     cfg = load_config(args.config)
     ensure_dir(args.output_dir)
+    save_change_maps_flag = args.save_change_maps or cfg.get("output", {}).get("save_change_maps", False)
     stats = fit_or_load_band_stats(
         args.oscd_root,
         cfg["dataset"]["band_order"],
@@ -331,6 +349,10 @@ def main():
                     f1_global.append(metrics_g["f1"])
                     iou_global.append(metrics_g["iou"])
                     per_tile.append({"city": city, "otsu": metrics_o, "global": metrics_g})
+                if save_change_maps_flag:
+                    base_maps = Path(args.output_dir) / "oscd_change_maps"
+                    bin_mask = apply_threshold(score, global_thresholds[method])
+                    save_change_map_npytiff(base_maps, split_name, method, city, score, bin_mask)
                 runtimes.append(rec["runtimes"][method])
             split_metrics[method] = {
                 "auroc_mean": float(np.nanmean(aurocs)) if aurocs else float("nan"),

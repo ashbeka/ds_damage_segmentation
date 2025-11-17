@@ -21,6 +21,7 @@ ds:
   rank_r: 6
   variance_threshold: null
   use_randomized_pca: true
+  subspace_variant: residual
   window:
     enabled: true
     size: 64

@@ -25,6 +25,7 @@ ds:
   rank_r: 6
   variance_threshold: null  # use rank_r unless set
   use_randomized_pca: true
+  subspace_variant: residual  # residual (stacked) or eig (sum-of-projector eigensplit)
   window:
     enabled: true
     size: 64
@@ -68,3 +69,6 @@ thresholding:
         max: 0.95
         step: 0.05
   primary_metric: iou
+
+output:
+  save_change_maps: false

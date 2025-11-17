@@ -101,3 +101,25 @@ def difference_subspace(phi: Array, psi: Array) -> Array:
     r_psi = residual_projector(psi)
     stacked = np.concatenate([r_psi @ phi, r_phi @ psi], axis=1)
     return orthonormalize(stacked)
+
+
+def difference_subspace_eig(phi: Array, psi: Array, eps: float = 1e-6) -> Array:
+    """
+    Construct difference subspace using eigen-decomposition of the sum of projectors.
+
+    Let G = P_phi + P_psi. Eigenvalues near 2 correspond to the common subspace,
+    eigenvalues in (0,1) correspond to directions present in one subspace but not the other,
+    and eigenvalues near 0 lie outside both. We select eigenvectors with eigenvalues in (eps, 1-eps).
+    """
+    if phi.shape[0] != psi.shape[0]:
+        raise ValueError("Bases must have same dimensionality.")
+    p_phi = phi @ phi.T
+    p_psi = psi @ psi.T
+    g = p_phi + p_psi
+    eigvals, eigvecs = np.linalg.eigh(g)
+    idx = np.where((eigvals > eps) & (eigvals < 1.0 - eps))[0]
+    if idx.size == 0:
+        # fall back to residual-stacked if no eigenvectors satisfy the criteria
+        return difference_subspace(phi, psi)
+    d_basis = eigvecs[:, idx]
+    return orthonormalize(d_basis)
