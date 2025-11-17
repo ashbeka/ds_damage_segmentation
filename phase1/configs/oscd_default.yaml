@@ -1,0 +1,68 @@
+seed: 1234
+
+dataset:
+  name: oscd
+  root: null  # set via CLI or env
+  split_source: official_oscd_split
+  val_cities: []  # optional explicit val list; if empty, use val_from_train
+  val_from_train: 3  # take first N train tiles as val if val_cities empty
+  band_order: [B01, B02, B03, B04, B05, B06, B07, B08, B09, B10, B11, B12, B8A]
+  nodata_value: 0
+  min_valid_bands: 3
+  internal_tiling:
+    enabled: true
+    tile_size: 512
+    stride: 512
+
+normalization:
+  type: zscore
+  stats_path: data/oscd_band_stats.json
+  stats_band_order: [B01, B02, B03, B04, B05, B06, B07, B08, B09, B10, B11, B12, B8A]
+  ignore_nodata: true
+  eps: 1.0e-6
+
+ds:
+  rank_r: 6
+  variance_threshold: null  # use rank_r unless set
+  use_randomized_pca: true
+  window:
+    enabled: true
+    size: 64
+    stride: 32
+    aggregator: mean  # mean or max
+  score:
+    use_projection: true
+    use_cross_residual: true
+    normalization: percentile_99  # minmax or percentile_99
+    percentile: 99.0
+
+baselines:
+  pixel_diff:
+    enabled: true
+  cva:
+    enabled: true
+  pca_diff:
+    enabled: true
+    rank_S: 3
+    variance_threshold: 0.95
+  celik:
+    enabled: true
+    patch_size: 3
+    pca_energy: 0.9
+    kmeans_init: k-means++
+    max_iter: 100
+    downsample_max_side: 128
+  ir_mad:
+    enabled: false  # stretch goal
+
+thresholding:
+  methods:
+    - name: otsu_per_tile
+    - name: global_fixed
+      source: oscd_train
+      criterion: iou  # or f1
+      grid:
+        min: 0.05
+        max: 0.95
+        step: 0.05
+  primary_metric: iou

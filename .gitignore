@@ -1,0 +1,26 @@
+# Python artifacts
+*.pyc
+*.pyo
+*.pyd
+.Python
+.venv/
+env/
+venv/
+phase1/__pycache__/
+phase1/**/__pycache__/
+
+# IDE/editor
+.idea/
+.vscode/
+.ipynb_checkpoints/
+
+# Phase1 outputs and large data
+phase1/outputs/
+phase1/data/raw/
+phase1/*.tif
+phase1/*.tiff
+phase1/**/*.tif
+phase1/**/*.tiff
+
+# Logs
+*.log

@@ -1,0 +1,38 @@
+seed: 1234
+
+dataset:
+  name: multisenge_s2
+  root: null  # set via CLI or env
+  n_dates_required: 2
+  max_patches_for_phase1: 200
+  pair_strategy: earliest_latest  # earliest_latest | first_mid_last | adjacent
+  band_order: [B02, B03, B04, B05, B06, B07, B08, B8A, B11, B12]  # MultiSenGE S2 uses 10 bands
+  nodata_value: 0
+  min_valid_bands: 3
+
+normalization:
+  type: zscore
+  stats_path: data/oscd_band_stats.json
+  stats_band_order: [B01, B02, B03, B04, B05, B06, B07, B08, B09, B10, B11, B12, B8A]
+  ignore_nodata: true
+  eps: 1.0e-6
+
+ds:
+  rank_r: 6
+  variance_threshold: null
+  use_randomized_pca: true
+  window:
+    enabled: true
+    size: 64
+    stride: 32
+    aggregator: mean
+  score:
+    use_projection: true
+    use_cross_residual: true
+    normalization: percentile_99
+    percentile: 99.0
+
+output:
+  formats: [png, geotiff]  # emit both
+  save_arrays: false
+  band_order_note: "MultiSenGE S2 provides 10 bands: [B02,B03,B04,B05,B06,B07,B08,B8A,B11,B12]. OSCD stats are subset to this order."

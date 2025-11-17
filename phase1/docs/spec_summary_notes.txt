@@ -1,0 +1,9 @@
+# Summary of spec_phase1_ds_oscd.md (for quick reference)
+# - Scope: Phase 1 delivers DS-only change detection on Sentinel-2 (OSCD benchmark + MultiSenGE visuals), no deep nets.
+# - Data: OSCD official train/val/test splits with 13-band S2 pairs + binary masks; MultiSenGE S2 multi-temporal patches for qualitative DS maps only.
+# - Preprocessing: bandwise z-score fitted on OSCD train (ignore NODATA, configurable value/min_valid), fixed band order, reshape 13xHxW <-> 13xN helpers.
+# - Methods: DS via rank-r PCA per time, residual projectors, orthonormal diff subspace; scores = projection energy + cross-residual; optional sliding-window and per-tile [0,1] normalization w/ percentile clipping.
+# - Baselines: pixel L2 diff, CVA, PCA-diff, Celik local PCA+kmeans; IR-MAD optional/stub.
+# - Thresholding: per-tile Otsu and global threshold calibrated on OSCD train grid search; no test leakage.
+# - Metrics/logging: AUROC, F1, IoU, Precision, Recall, runtime per tile; save configs/results JSON/CSV; reproducible seeds.
+# - Drivers/configs: CLI scripts for OSCD eval and MultiSenGE viz; YAML configs store hyperparams; outputs include DS maps and galleries for MultiSenGE.
