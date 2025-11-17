@@ -16,6 +16,7 @@ from baselines.celik_pca_kmeans import celik_score
 from baselines.cva import cva_score
 from baselines.pca_diff import pca_diff_score
 from baselines.pixel_diff import pixel_l2_difference
+from baselines.ir_mad import ir_mad_score
 from data.oscd_dataset import OSCDEvaluatorDataset, fit_or_load_band_stats
 from data.preprocessing import BandStats, apply_normalization
 from ds.ds_scores import DSConfig, compute_ds_scores, sliding_window_ds
@@ -106,6 +107,15 @@ def run_methods_on_tile(
             max_iter=ck.get("max_iter", 100),
             valid_mask=valid_mask,
             downsample_max_side=ck.get("downsample_max_side"),
+        )
+    if baseline_cfg.get("ir_mad", {}).get("enabled", False):
+        ir = baseline_cfg["ir_mad"]
+        scores["ir_mad"] = ir_mad_score(
+            x1,
+            x2,
+            valid_mask,
+            iters=ir.get("iters", 3),
+            downsample_max_pixels=ir.get("downsample_max_pixels", 200000),
         )
     return scores
 

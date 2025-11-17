@@ -44,10 +44,11 @@ def celik_score(
     if patch_size % 2 == 0:
         raise ValueError("patch_size must be odd.")
     diff = x2 - x1
+    orig_h, orig_w = diff.shape[1:]
+    step = 1
     # optional downsample for stability on large tiles
     if downsample_max_side is not None:
-        h, w = diff.shape[1:]
-        max_side = max(h, w)
+        max_side = max(orig_h, orig_w)
         if max_side > downsample_max_side:
             step = int(np.ceil(max_side / downsample_max_side))
             diff = diff[:, ::step, ::step]
@@ -87,4 +88,7 @@ def celik_score(
     score_flat = score_flat * score_vals
 
     score = score_flat.reshape(diff.shape[1], diff.shape[2])
+    if step > 1:
+        score = np.repeat(np.repeat(score, step, axis=0), step, axis=1)
+        score = score[:orig_h, :orig_w]
     return score

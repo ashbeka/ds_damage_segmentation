@@ -47,13 +47,15 @@ baselines:
     variance_threshold: 0.95
   celik:
     enabled: true
-    patch_size: 3
+    patch_size: 7
     pca_energy: 0.9
     kmeans_init: k-means++
     max_iter: 100
-    downsample_max_side: 128
+    downsample_max_side: 192  # modest downsample to keep runtime manageable
   ir_mad:
-    enabled: false  # stretch goal
+    enabled: true  # stretch goal, disable by default for stability
+    iters: 3
+    downsample_max_pixels: 200000
 
 thresholding:
   methods:
