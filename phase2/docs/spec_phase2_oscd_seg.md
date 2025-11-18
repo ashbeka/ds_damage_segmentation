@@ -469,8 +469,8 @@ python -m viz.viz_seg_predictions \
   --config configs/oscd_seg_priors.yaml \
   --oscd_root phase1/data/raw/OSCD \
   --phase1_change_maps_root phase1/outputs/oscd_saved/oscd_change_maps \
-  --checkpoint phase2_outputs/oscd_seg_run1/best.ckpt \
-  --output_dir phase2_outputs/oscd_seg_figs \
+  --checkpoint phase2/outputs/oscd_seg_run1/best.ckpt \
+  --output_dir phase2/outputs/oscd_seg_figs \
   --cities all
 ```
 ### 7.2 Overlay utilities
