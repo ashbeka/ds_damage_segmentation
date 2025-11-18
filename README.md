@@ -1,5 +1,11 @@
 # DS_damage_segmentation – Difference‑Subspace Priors for Change & Damage Segmentation
 
+<p align="center">
+  <img src="phase1/docs/figs/chongqing_ds_summary.png" alt="Phase‑1 OSCD DS example – Chongqing" width="30%">
+  <img src="phase2/docs/figs/chongqing_seg_resnet.png" alt="Phase‑2 ResNet segmentation – Chongqing" width="30%">
+  <img src="phase2/docs/figs/chongqing_combined_resnet.png" alt="Phase‑2 combined DS/PCA vs segmentation – Chongqing" width="30%">
+</p>
+
 End‑to‑end research code for **Difference‑Subspace (DS)** change detection and
 **segmentation with DS / PCA‑diff priors** on Sentinel‑2 imagery.
 
