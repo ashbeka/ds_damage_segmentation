@@ -169,6 +169,13 @@ This 3×3 figure shows:
 - RGB L2 diff, full‑band diff.
 - DS projection, DS mask (Otsu), PCA‑diff + metrics.
 
+Example preview (if you copy it into a tracked folder and update the
+path):
+
+```markdown
+![Phase‑1 OSCD DS example – Chongqing](phase1/outputs/oscd_figs_all/chongqing_summary.png)
+```
+
 If you want such figures to render on GitHub, copy a few PNGs into a
 tracked folder (e.g. `phase1/docs/figs/`) and adjust the paths in this
 README accordingly.
@@ -308,6 +315,13 @@ phase2/outputs/oscd_seg_figs_E0_resnet/chongqing_seg_summary.png
 
 Each shows Pre RGB, Post RGB, GT overlay, prob map, and mask.
 
+Example preview (if you copy it into a tracked folder and update the
+path):
+
+```markdown
+![Phase‑2 ResNet segmentation – Chongqing](phase2/outputs/oscd_seg_figs_E0_resnet/chongqing_seg_summary.png)
+```
+
 **Combined DS/PCA + segmentation figures** (`viz_oscd_combined.py`):
 
 ResNet raw‑only:
@@ -347,6 +361,13 @@ shows:
 These are key for telling the DS‑centric story: they show where the
 segmentation model agrees with priors and GT, and where it diverges
 (e.g., DS‑strong but GT‑negative vegetation changes).
+
+Example preview (if you copy it into a tracked folder and update the
+path):
+
+```markdown
+![Phase‑2 combined DS/PCA vs segmentation – Chongqing, ResNet baseline](phase2/outputs/oscd_combined_resnet/chongqing_combined_summary.png)
+```
 
 If you want combined figures visible on GitHub, copy a few PNGs into a
 tracked folder (e.g. `phase2/docs/figs/`) and reference them from the
@@ -422,4 +443,3 @@ For full methodological details and ablation results, see:
 
 These, together with the run guides, are the main handoff documents for
 anyone extending this repo (including a future Phase‑3 assistant).
-
