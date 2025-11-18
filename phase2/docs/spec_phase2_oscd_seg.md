@@ -296,11 +296,12 @@ File: phase2/train/train_oscd_seg.py
 
 - CLI example:
 
-```python -m train.train_oscd_seg \
+```bash
+python -m train.train_oscd_seg \
   --config configs/oscd_seg_priors.yaml \
   --oscd_root phase1/data/raw/OSCD \
   --phase1_change_maps_root phase1/outputs/oscd_saved/oscd_change_maps \
-  --output_dir phase2_outputs/oscd_seg_run1
+  --output_dir phase2/outputs/oscd_seg_run1
 ```
 - Responsibilities:
 
@@ -402,8 +403,8 @@ python -m eval.evaluate_oscd_seg \
   --config configs/oscd_seg_priors.yaml \
   --oscd_root phase1/data/raw/OSCD \
   --phase1_change_maps_root phase1/outputs/oscd_saved/oscd_change_maps \
-  --checkpoint phase2_outputs/oscd_seg_run1/best.ckpt \
-  --output_dir phase2_outputs/oscd_eval_run1
+  --checkpoint phase2/outputs/oscd_seg_run1/best.ckpt \
+  --output_dir phase2/outputs/oscd_eval_run1
 ```
 - Responsibilities:
 
@@ -431,7 +432,7 @@ File: phase2/eval/compare_priors_effect.py
     - features_config = "raw+ds+pca"
   - Produces a small table + optional bar chart (per metric).
   - Writes to:
-    - phase2_outputs/oscd_priors_ablation_summary.csv.
+    - phase2/outputs/oscd_priors_ablation_summary.csv.
   - Config should contain a human-readable string like:
 
 experiment_tag: "raw+ds+pca"

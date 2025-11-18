@@ -50,7 +50,7 @@ model:
   depth: 4
 
 training:
-  epochs: 50
+  epochs: 50  # or 150
   batch_size: 8
   optimizer:
     name: adamw

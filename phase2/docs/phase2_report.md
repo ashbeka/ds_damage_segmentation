@@ -540,17 +540,83 @@ How to read them:
     how priors influence the network (e.g., extra detections where DS
     is strong).
 
-### 6.3 Suggested future viz enhancements
+### 6.3 Combined DS/PCA + segmentation figures (implemented)
 
-Possible Phase 2b/3 improvements (not yet implemented):
+To make the relationship between priors and segmentation clearer, Phase
+2 now includes a dedicated combined visualization script:
 
-- Add a third row in Phase 2 figures showing:
-  - DS projection map (from Phase 1).
-  - PCA‑diff map.
-  - Segmentation mask overlaid on DS/PCA‑diff to visualize how the
-    network uses priors.
-- Annotate per‑city segmentation metrics (IoU/F1) in the figure itself,
-  similar to Phase‑1 DS metrics panel.
+- `phase2/viz/viz_oscd_combined.py`
+  - Inputs:
+    - Phase‑1 DS/PCA‑diff change maps (`ds_projection`, `pca_diff`).
+    - Phase‑2 segmentation model + checkpoint.
+    - OSCD tiles and GT masks.
+  - Output: for each city, a **3×3 figure** with:
+    - Row 1: Pre RGB, Post RGB, GT overlay.
+    - Row 2: DS projection (normalized), PCA‑diff (normalized),
+      segmentation probability map.
+    - Row 3: DS mask (Otsu on DS), segmentation mask (threshold 0.5),
+      an empty slot reserved for future per‑tile metrics.
+
+Example usage (ResNet raw‑only model):
+
+```bash
+cd phase2
+python -m viz.viz_oscd_combined \
+  --config configs/oscd_seg_baseline_resnet.yaml \
+  --oscd_root ../phase1/data/raw/OSCD \
+  --phase1_change_maps_root ../phase1/outputs/oscd_saved/oscd_change_maps \
+  --checkpoint outputs/oscd_seg_E0_raw_resnet/best.ckpt \
+  --output_dir outputs/oscd_combined_resnet \
+  --cities test
+```
+
+This implements the “optional viz enhancement” described in the spec:
+priors (DS/PCA‑diff), segmentation probabilities/masks, and GT are all
+shown together, making it much easier to:
+
+- See where DS/PCA‑diff agree with GT and where they highlight subtle
+  spectral changes beyond RGB.
+- Diagnose when the segmentation model follows or ignores DS‑strong
+  regions.
+
+In the current Phase‑2 runs we generated these combined figures for all
+OSCD **test** cities using the **ResNet raw‑only** baseline
+(`outputs/oscd_combined_resnet/*.png`). Qualitatively, these confirm
+that:
+
+- DS/PCA‑diff maps often extend slightly beyond the binary GT mask,
+  highlighting subtle spectral changes (e.g. vegetation or radiometric
+  shifts) that the GT does not label as “change”.
+- The segmentation model tends to align more tightly with the GT
+  footprint, focusing on large, structurally consistent change regions.
+
+This supports the narrative that DS/PCA‑diff act as broader,
+unsupervised “change detectors”, while supervised segmentation learns a
+task‑specific subset of those changes driven by the annotated labels.
+
+We also generated combined figures for the **PriorsFusionUNet**
+(`outputs/oscd_combined_fusion/*.png`), using
+`configs/oscd_seg_priors_fusion.yaml` and the
+`outputs/oscd_seg_E3_raw_ds_pca_fusion/best.ckpt` checkpoint. Compared
+to the ResNet raw‑only plots, the fusion model’s segmentation masks tend
+to:
+
+- Track DS/PCA‑diff “hot” regions more aggressively, including areas of
+  subtle spectral change outside the GT change footprint.
+- Look more diffuse, with additional false positives around DS‑strong
+  vegetation or radiometric artefacts.
+
+This visual behavior is consistent with the quantitative metrics:
+PriorsFusionUNet slightly improves AUROC relative to naive priors
+concatenation, but its IoU/F1 remain below the best raw‑only baselines
+because it inherits more of the DS/PCA sensitivity to non‑GT changes.
+
+Further enhancements (left for Phase 2b/3) include:
+
+- Annotating per‑city segmentation metrics (IoU/F1/AUROC) directly in
+  the combined figures.
+- Adding simple difference/overlay panels (e.g., seg mask XOR DS mask)
+  to highlight disagreements.
 
 These would further strengthen the explainability story.
 
@@ -679,4 +745,3 @@ This document, together with `phase1_report.md` and the two specs,
 should give a Phase‑3 assistant or collaborator enough context to
 understand exactly what has been done, why, and how to build the next
 steps on top of it.
-
