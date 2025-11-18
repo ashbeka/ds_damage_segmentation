@@ -1,0 +1,71 @@
+dataset:
+  name: oscd
+  root: phase1/data/raw/OSCD
+  split:
+    train:
+      - beirut
+      - bercy
+      - bordeaux
+      - cupertino
+      - hongkong
+      - mumbai
+      - nantes
+      - paris
+      - pisa
+      - rennes
+      - saclay_e
+    val:
+      - abudhabi
+      - aguasclaras
+      - beihai
+    test:
+      - brasilia
+      - chongqing
+      - dubai
+      - lasvegas
+      - milano
+      - montpellier
+      - norcia
+      - rio
+      - saclay_w
+      - valencia
+  patch_size: 256
+  patch_overlap: 64
+  augmentations:
+    flip: true
+    rotate90: true
+    noise: true
+
+features:
+  use_raw_s2: true
+  use_pre_post_stack: true
+  priors:
+    ds_projection: true
+    pca_diff: true
+    pixel_diff: false
+
+model:
+  type: priors_fusion_unet
+  base_channels: 64
+  depth: 4
+  num_classes: 1
+
+training:
+  epochs: 50
+  batch_size: 8
+  optimizer:
+    name: adamw
+    lr: 0.001
+    weight_decay: 0.0001
+  scheduler:
+    name: cosine
+    T_max: 50
+  loss:
+    bce_weight: 1.0
+    dice_weight: 1.0
+
+phase1:
+  change_maps_root: phase1/outputs/oscd_saved/oscd_change_maps
+
+experiment_tag: "oscd_seg_raw+ds+pca_fusion"
+

@@ -6,6 +6,10 @@
 .venv/
 env/
 venv/
+.venv_phase2/
+phase2/outputs/
+research-notes/
+reference_code/
 phase1/__pycache__/
 phase1/**/__pycache__/
 

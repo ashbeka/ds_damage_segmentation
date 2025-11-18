@@ -10,7 +10,7 @@ from typing import Dict, Iterable, List, Optional, Tuple
 import numpy as np
 import rasterio
 
-from data.preprocessing import BandStats, build_valid_mask, compute_band_stats, load_band_stats, save_band_stats
+from .preprocessing import BandStats, build_valid_mask, compute_band_stats, load_band_stats, save_band_stats
 
 
 Array = np.ndarray

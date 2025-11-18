@@ -165,6 +165,7 @@ def eval_split(
         score_normalization=cfg["ds"]["score"].get("normalization", "percentile_99"),
         percentile=cfg["ds"]["score"].get("percentile", 99.0),
         nodata_value=cfg["dataset"].get("nodata_value", 0.0),
+        subspace_variant=cfg["ds"].get("subspace_variant", "residual"),
     )
     results = {}
     for sample in dataset:

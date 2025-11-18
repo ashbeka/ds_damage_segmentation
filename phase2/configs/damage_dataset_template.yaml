@@ -1,0 +1,40 @@
+dataset:
+  name: damage_template
+  root: /path/to/damage_dataset_root
+  split:
+    train: []
+    val: []
+    test: []
+  patch_size: 256
+  patch_overlap: 64
+
+features:
+  use_raw_s2: true
+  use_pre_post_stack: true
+  priors:
+    ds_projection: false
+    pca_diff: false
+    pixel_diff: false
+
+model:
+  type: unet2d
+  base_channels: 64
+  depth: 4
+  num_classes: 2  # adjust for multi-class damage
+
+training:
+  epochs: 50
+  batch_size: 8
+  optimizer:
+    name: adamw
+    lr: 0.001
+    weight_decay: 0.0001
+  scheduler:
+    name: cosine
+    T_max: 50
+  loss:
+    bce_weight: 1.0
+    dice_weight: 1.0
+
+experiment_tag: "damage_seg_template"
+

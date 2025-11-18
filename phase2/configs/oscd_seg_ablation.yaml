@@ -1,0 +1,10 @@
+experiments:
+  - config: configs/oscd_seg_baseline.yaml
+    tag: "raw_only"
+  - config: configs/oscd_seg_E1_raw_ds.yaml
+    tag: "raw+ds"
+  - config: configs/oscd_seg_E2_raw_pca.yaml
+    tag: "raw+pca"
+  - config: configs/oscd_seg_priors.yaml
+    tag: "raw+ds+pca"
+
